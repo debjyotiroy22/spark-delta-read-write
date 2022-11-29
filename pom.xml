@@ -1,0 +1,230 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.databricks</groupId>
+  <artifactId>spark-dbr-cli</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <inceptionYear>2008</inceptionYear>
+  <packaging>jar</packaging>
+
+  <properties>
+    <scala.binary.version>2.12</scala.binary.version>
+    <scala.plugin.version>2.14.2</scala.plugin.version>
+    <compiler.plugin.version>3.2</compiler.plugin.version>
+    <spark.version>3.0.1</spark.version>
+    <delta.version>2.1.1</delta.version>
+    <CodeCacheSize>512m</CodeCacheSize>
+    <java.source.version>1.8</java.source.version>
+    <java.target.version>1.8</java.target.version>
+    <compiler.plugin.version>3.2</compiler.plugin.version>
+<!--    <scalatest.plugin.version>1.0</scalatest.plugin.version>-->
+    <jar.plugin.version>2.6</jar.plugin.version>
+    <maven.build-helper.version>1.7</maven.build-helper.version>
+<!--    <scala.test.version>3.0.8</scala.test.version>-->
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-releases</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>http://scala-tools.org/repo-releases</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <dependencies>
+
+
+    <dependency>
+      <groupId>org.specs</groupId>
+      <artifactId>specs</artifactId>
+      <version>1.2.5</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-core_2.12</artifactId>
+      <version>${spark.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-sql_2.12</artifactId>
+      <version>${spark.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.delta</groupId>
+      <artifactId>delta-core_2.12</artifactId>
+      <version>${delta.version}</version>
+    </dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>org.scalatest</groupId>-->
+<!--      <artifactId>scalatest_2.13</artifactId>-->
+<!--      <version>${scala.test.version}</version>-->
+<!--    </dependency>-->
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src/main/scala</sourceDirectory>
+    <resources><resource><directory>src/main/resources</directory></resource></resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin.version}</version>
+        <configuration>
+          <source>${java.source.version}</source>
+          <target>${java.target.version}</target>
+          <compilerArgs>
+            <arg>-J-XX:PermSize=128m</arg>
+            <arg>-J-XX:MaxPermSize=2g</arg>
+            <arg>-J-XX:ReservedCodeCacheSizee=1512m</arg>
+          </compilerArgs>
+        </configuration>
+
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.databricks.DeltaReadTest</mainClass>
+              <mainClass>com.databricks.DeltaWriteTest</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <!-- bind to the packaging phase -->
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${jar.plugin.version}</version>
+        <configuration>
+          <excludes>
+            <exclude>*.conf</exclude>
+            <exclude>job.xml</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${maven.build-helper.version}</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/main/java</source>
+                <source>src/main/scala</source>
+                <source>src/main/resources</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+<!--            <id>add-test-source</id>-->
+<!--            <phase>generate-test-sources</phase>-->
+<!--            <goals>-->
+<!--              <goal>add-test-source</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <sources>-->
+<!--                <source>src/test/java</source>-->
+<!--                <source>src/test/scala</source>-->
+<!--                <source>src/test/resources</source>-->
+<!--              </sources>-->
+<!--            </configuration>-->
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.scala-tools</groupId>
+        <artifactId>maven-scala-plugin</artifactId>
+        <version>2.14.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDir>src/main/scala</sourceDir>
+          <sourceDir>src/test/scala</sourceDir>
+          <jvmArgs>
+            <jvmArg>-Xms64m</jvmArg>
+            <jvmArg>-Xmx1024m</jvmArg>
+            <!--                        <jvmArg>-XX:PermSize=128m</jvmArg>-->
+            <jvmArg>-XX:MaxPermSize=1512m</jvmArg>
+          </jvmArgs>
+        </configuration>
+      </plugin>
+
+
+<!--      <plugin>-->
+<!--        <groupId>org.scalatest</groupId>-->
+<!--        <artifactId>scalatest-maven-plugin</artifactId>-->
+<!--&lt;!&ndash;        <version>${scalatest.plugin.version}</version>&ndash;&gt;-->
+<!--        <configuration>-->
+<!--          <forkMode>once</forkMode>-->
+<!--          <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>-->
+<!--          <junitxml>.</junitxml>-->
+<!--          <filereports>WDF TestSuite.txt</filereports>-->
+<!--          <argLine>-Xmx3g -Xss4096k -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=512m</argLine>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>test</id>-->
+<!--            <goals>-->
+<!--              <goal>test</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
+    </plugins>
+  </build>
+<!--  <reporting>-->
+<!--    <plugins>-->
+<!--      <plugin>-->
+<!--        <groupId>org.scala-tools</groupId>-->
+<!--        <artifactId>maven-scala-plugin</artifactId>-->
+<!--        <configuration>-->
+<!--          <scalaVersion>${scala.version}</scalaVersion>-->
+<!--        </configuration>-->
+<!--      </plugin>-->
+<!--    </plugins>-->
+<!--  </reporting>-->
+</project>
