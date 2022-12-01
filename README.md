@@ -123,6 +123,6 @@ This jar can read and write delta files by running inside Databricks platform, a
    ```
 
 ### Instakk DBCLI into laptop
-Here is documentation [link]("https://docs.databricks.com/dev-tools/cli/index.html#set-up-the-cli") to install DB CLI in laptop.
+Here is documentation [link](https://docs.databricks.com/dev-tools/cli/index.html#set-up-the-cli) to install DB CLI in laptop.
 
 
