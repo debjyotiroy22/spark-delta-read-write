@@ -38,14 +38,20 @@ This jar can read and write delta files by running inside Databricks platform, a
    ```
  If you are writing to hdfs then the path needs to have prefix "hdfs:/"
  
+3. Run the command to read the data. It will print the dataframe on console.
+
+  ```shell
+   spark-submit --packages io.delta:delta-core_2.12:2.1.1 --conf "spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension" --conf "spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog" --jars spark-dbr-cli-1.0-SNAPSHOT-jar-with-dependencies.jar --class com.databricks.DeltaReadTest spark-dbr-cli-1.0-SNAPSHOT.jar <DELTA FILES PATH> 
+   ```
  
  ### How to run the jar on Databricks platform using DBCLI from laptop
  1. Upload the jar files to Databricks file system
 
    ```shell
-   $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   $ dbfs cp spark-dbr-cli-1.0-SNAPSHOT-jar-with-dependencies.jar dbfs:<USER DIRECTORY>
+   $ dbfs cp spark-dbr-cli-1.0-SNAPSHOT.jar dbfs:<USER DIRECTORY>
    ```
-
+ 
    
  
  ### Install spark on laptop
