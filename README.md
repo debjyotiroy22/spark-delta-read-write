@@ -54,6 +54,8 @@ This jar can read and write delta files by running inside Databricks platform, a
  2. Run this command to create the delta write job.
  
    ```shell
+   export DATABRICKS_TOKEN=<TOKEN>
+   
    curl -n \
 -X POST --header "Authorization: Bearer $DATABRICKS_TOKEN" -H 'Content-Type: application/json' -d \
 '{
