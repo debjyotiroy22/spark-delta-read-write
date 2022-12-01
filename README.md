@@ -44,7 +44,7 @@ This jar can read and write delta files by running inside Databricks platform, a
    spark-submit --packages io.delta:delta-core_2.12:2.1.1 --conf "spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension" --conf "spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog" --jars spark-dbr-cli-1.0-SNAPSHOT-jar-with-dependencies.jar --class com.databricks.DeltaReadTest spark-dbr-cli-1.0-SNAPSHOT.jar <DELTA FILES PATH> 
    ```
  
- ### How to run the jar on Databricks platform using DBCLI from laptop
+ ### How to run the jar on Databricks(AWS) platform using DBCLI from laptop
  1. Upload the jar to Databricks file system. The depedency jar is not required as Databricks cluster already has those libraries.
 
    ```shell
@@ -83,7 +83,33 @@ This jar can read and write delta files by running inside Databricks platform, a
 -d '{ "job_id": <JOB ID> }' https://<databricks-instance>/api/2.0/jobs/run-now   
    ```
    
+4. Run this command to create the delta read job.  
+
+```shell
+   curl -n \
+-X POST --header "Authorization: Bearer $DATABRICKS_TOKEN" -H 'Content-Type: application/json' -d \
+'{
+     "name": "spark_write_delta_job_demo",
+     "new_cluster": {
+        "spark_version": "11.3.x-cpu-ml-scala2.12",
+        "node_type_id": "i3en.xlarge",
+        "aws_attributes": {"availability": "ON_DEMAND"},
+        "num_workers": 2
+       },
+    "spark_submit_task": {
+       "parameters": [ 
+         "--class",
+         "com.databricks.DeltaReadTest",
+         "dbfs:/<USER DIRECTORY>/spark-dbr-cli-1.0-SNAPSHOT.jar",
+         "<OUTPUT PATH>"
+         ]
+       }
+}' https://<databricks-instance>/api/2.0/jobs/create
+   ```
    
+5. Similary you will get job id in return. Use the same command as #3 to run the job.
+
+
  ### Install spark into laptop
  1. Install brew
    
@@ -95,4 +121,7 @@ This jar can read and write delta files by running inside Databricks platform, a
    ```shell
    $ brew install apache-spark
    ```
+
+### Instakk DBCLI into laptop
+<a href="https://docs.databricks.com/dev-tools/cli/index.html#set-up-the-cli" alt="Stars"></a>
 
