@@ -75,6 +75,15 @@ This jar can read and write delta files by running inside Databricks platform, a
 }' https://<databricks-instance>/api/2.0/jobs/create
    ```
  
+ 3. Once you run the last command, you will get a job id in return. Then run this command to run the job.
+
+   ```shell
+   curl -n \
+-X POST --header "Authorization: Bearer $DATABRICKS_TOKEN" -H 'Content-Type: application/json' \
+-d '{ "job_id": <JOB ID> }' https://<databricks-instance>/api/2.0/jobs/run-now   
+   ```
+   
+   
  ### Install spark into laptop
  1. Install brew
    
