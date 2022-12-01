@@ -45,16 +45,37 @@ This jar can read and write delta files by running inside Databricks platform, a
    ```
  
  ### How to run the jar on Databricks platform using DBCLI from laptop
- 1. Upload the jar files to Databricks file system
+ 1. Upload the jar to Databricks file system. The depedency jar is not required as Databricks cluster already has those libraries.
 
    ```shell
-   $ dbfs cp spark-dbr-cli-1.0-SNAPSHOT-jar-with-dependencies.jar dbfs:<USER DIRECTORY>
    $ dbfs cp spark-dbr-cli-1.0-SNAPSHOT.jar dbfs:<USER DIRECTORY>
    ```
  
-   
+ 2. Run this command to create the delta write job.
  
- ### Install spark on laptop
+   ```shell
+   curl -n \
+-X POST --header "Authorization: Bearer $DATABRICKS_TOKEN" -H 'Content-Type: application/json' -d \
+'{
+     "name": "spark_write_delta_job_demo",
+     "new_cluster": {
+        "spark_version": "11.3.x-cpu-ml-scala2.12",
+        "node_type_id": "i3en.xlarge",
+        "aws_attributes": {"availability": "ON_DEMAND"},
+        "num_workers": 2
+       },
+    "spark_submit_task": {
+       "parameters": [ 
+         "--class",
+         "com.databricks.DeltaWriteTest",
+         "dbfs:/<USER DIRECTORY>/spark-dbr-cli-1.0-SNAPSHOT.jar",
+         "<OUTPUT PATH>"
+         ]
+       }
+}' https://<databricks-instance>/api/2.0/jobs/create
+   ```
+ 
+ ### Install spark into laptop
  1. Install brew
    
    ```shell
