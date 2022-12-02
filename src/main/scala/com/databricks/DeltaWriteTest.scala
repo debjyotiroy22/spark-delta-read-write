@@ -46,7 +46,7 @@ object DeltaWriteTest {
 
     val dfsFilename = s"$dfsDirPath/delta"
     println("Writing local file to DFS")
-    data.write.format("delta").save(dfsFilename)
+    data.write.mode("overwrite").format("delta").save(dfsFilename)
 
     spark.stop()
 
